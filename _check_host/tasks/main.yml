@@ -1,0 +1,20 @@
+---
+- name: Handle error and set fact reachable false
+  block:
+    - wait_for_connection:
+        timeout: "{{ connection_timeout }}"
+  rescue:
+    - set_fact:
+        reachable: false
+    - meta: clear_host_errors
+    - meta: end_host
+- name: Set fact reachable true if no error
+  set_fact:
+    reachable: true
+
+- name: Add host on reacheable group
+  add_host:
+    name: "{{ item }}"
+    groups:
+      - reachable
+  loop: "{{ hostvars|dict2items|json_query('[?value.reachable].key') }}"

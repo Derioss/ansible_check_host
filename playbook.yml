@@ -1,0 +1,9 @@
+---
+- hosts: hostgroup
+  gather_facts: false
+  roles:
+    - {role: _check_host}
+
+- hosts: "{{ groups.reachable.0 }}"
+  roles:
+    - {role: a role}
